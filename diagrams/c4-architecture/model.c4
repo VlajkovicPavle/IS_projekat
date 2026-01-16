@@ -1,0 +1,356 @@
+// Mountain Tours System - C4 Architecture Model
+// Using LikeC4 (https://likec4.dev)
+
+specification {
+  // Element kinds
+  element actor {
+    style {
+      shape person
+      color amber
+    }
+  }
+
+  element system {
+    style {
+      shape rectangle
+      color slate
+    }
+  }
+
+  element externalSystem {
+    style {
+      shape rectangle
+      color secondary
+    }
+  }
+
+  element service {
+    style {
+      shape rectangle
+      color primary
+      icon tech:dotnet
+    }
+  }
+
+  element webapp {
+    style {
+      shape browser
+      color sky
+    }
+  }
+
+  element gateway {
+    style {
+      shape rectangle
+      color indigo
+    }
+  }
+
+  element database {
+    style {
+      shape storage
+      color green
+      icon tech:postgresql
+    }
+  }
+
+  element messageQueue {
+    style {
+      shape queue
+      color amber
+      icon tech:rabbitmq
+    }
+  }
+
+  element component {
+    style {
+      shape rectangle
+      color sky
+    }
+  }
+
+  // Relationship kinds
+  relationship async {
+    color amber
+    line dashed
+  }
+
+  relationship sync {
+    color slate
+    line solid
+  }
+}
+
+model {
+  // ==========================================================================
+  // ACTORS
+  // ==========================================================================
+
+  actor user 'User' {
+    description 'Registered user who searches, books, and participates in mountain tours'
+  }
+
+  actor guide 'Guide' {
+    description 'Certified mountain guide who leads tours, manages availability, and shares live location'
+  }
+
+  actor tourOperator 'Tour Operator' {
+    description 'Business entity that creates tours, assigns guides, and manages operations'
+  }
+
+  actor admin 'Administrator' {
+    description 'System administrator who approves registrations, handles disputes, and configures the platform'
+  }
+
+  // ==========================================================================
+  // EXTERNAL SYSTEMS
+  // ==========================================================================
+
+  externalSystem stripe 'Stripe' {
+    icon tech:stripe
+    description 'Payment processing for tour bookings'
+  }
+
+  externalSystem emailProvider 'Email Provider' {
+    icon tech:sendgrid
+    description 'Transactional email service (SendGrid/Mailgun)'
+  }
+
+  externalSystem mapsApi 'Maps API' {
+    icon tech:google
+    description 'Geolocation and mapping services'
+  }
+
+  // ==========================================================================
+  // MAIN SYSTEM WITH CONTAINERS
+  // ==========================================================================
+
+  system mountainTours 'Mountain Tours System' {
+    description 'Platform for discovering, booking, and managing mountain hiking tours'
+
+    webapp webApp 'Web Application' {
+      icon tech:react
+      description 'React SPA for users, guides, and operators'
+      technology 'React / TypeScript'
+    }
+
+    gateway apiGateway 'API Gateway' {
+      icon tech:dotnet
+      description 'Single entry point, routing, rate limiting'
+      technology 'YARP / .NET'
+    }
+
+    service iamService 'IAM Service' {
+      description 'Authentication, authorization, user registration, profile management'
+      technology '.NET'
+
+      component authController 'Auth Controller' {
+        description 'Handles login, logout, token refresh'
+      }
+      component userController 'User Controller' {
+        description 'Handles registration, profile updates'
+      }
+      component roleManager 'Role Manager' {
+        description 'Manages user roles and permissions'
+      }
+    }
+
+    service toursService 'Tours Service' {
+      description 'Core service for creating, managing, and searching tours'
+      technology '.NET / CQRS / MediatR'
+
+      component tourCommands 'Tour Commands' {
+        description 'Create, update, delete tour operations'
+      }
+      component tourQueries 'Tour Queries' {
+        description 'Search, filter, get tour details'
+      }
+      component guideAssignment 'Guide Assignment' {
+        description 'Assigns guides to tours based on availability'
+      }
+      component availabilityManager 'Availability Manager' {
+        description 'Manages guide availability calendars'
+      }
+    }
+
+    service bookingService 'Booking Service' {
+      description 'Tour reservations, availability, booking lifecycle'
+      technology '.NET'
+
+      component bookingCommands 'Booking Commands' {
+        description 'Create, cancel, reschedule bookings'
+      }
+      component bookingQueries 'Booking Queries' {
+        description 'Get user bookings, tour participants'
+      }
+      component availabilityChecker 'Availability Checker' {
+        description 'Checks tour capacity and time slots'
+      }
+      component paymentProcessor 'Payment Processor' {
+        icon tech:stripe
+        description 'Integrates with Stripe for payments'
+      }
+    }
+
+    service reviewService 'Review Service' {
+      description 'Tour and guide reviews, ratings, feedback'
+      technology '.NET'
+
+      component reviewCommands 'Review Commands' {
+        description 'Submit, update, delete reviews'
+      }
+      component reviewQueries 'Review Queries' {
+        description 'Get reviews, calculate ratings'
+      }
+      component completionVerifier 'Completion Verifier' {
+        description 'Verifies user participated in tour before review'
+      }
+    }
+
+    service notificationService 'Notification Service' {
+      description 'Real-time notifications, inter-service messaging, live location, event persistence'
+      technology '.NET / SignalR'
+
+      component signalRHub 'SignalR Hub' {
+        description 'WebSocket connections for real-time updates'
+      }
+      component eventConsumer 'Event Consumer' {
+        icon tech:rabbitmq
+        description 'Consumes events from RabbitMQ'
+      }
+      component eventStore 'Event Store' {
+        description 'Persists events to database for history and replay'
+      }
+      component emailSender 'Email Sender' {
+        description 'Sends transactional emails'
+      }
+      component locationBroadcaster 'Location Broadcaster' {
+        description 'Broadcasts guide location to tour participants'
+      }
+    }
+
+    // Databases
+    database iamDb 'IAM Database' {
+      description 'Users, roles, credentials, profiles'
+      technology 'PostgreSQL'
+    }
+
+    database toursDb 'Tours Database' {
+      description 'Tours, locations, schedules, assignments'
+      technology 'PostgreSQL'
+    }
+
+    database bookingDb 'Booking Database' {
+      description 'Reservations, status, participants'
+      technology 'PostgreSQL'
+    }
+
+    database reviewDb 'Review Database' {
+      description 'Reviews, ratings, feedback'
+      technology 'PostgreSQL'
+    }
+
+    database notificationDb 'Notification Database' {
+      description 'Event history, notification logs, delivery status'
+      technology 'PostgreSQL'
+    }
+
+    // Message Broker
+    messageQueue rabbitMq 'RabbitMQ' {
+      description 'Message broker for async inter-service communication'
+      technology 'RabbitMQ'
+    }
+  }
+
+  // ==========================================================================
+  // RELATIONSHIPS - System Context Level
+  // ==========================================================================
+
+  // Actor -> System
+  user -> mountainTours 'Searches tours, books, reviews'
+  guide -> mountainTours 'Manages availability, leads tours'
+  tourOperator -> mountainTours 'Creates tours, assigns guides'
+  admin -> mountainTours 'Manages platform, approves users'
+
+  // System -> External
+  mountainTours -> stripe 'Processes payments'
+  mountainTours -> emailProvider 'Sends emails'
+  mountainTours -> mapsApi 'Location services'
+
+  // ==========================================================================
+  // RELATIONSHIPS - Container Level
+  // ==========================================================================
+
+  // Actors -> Web App
+  user -> mountainTours.webApp 'Uses'
+  guide -> mountainTours.webApp 'Uses'
+  tourOperator -> mountainTours.webApp 'Uses'
+  admin -> mountainTours.webApp 'Uses'
+
+  // Web App -> Gateway (all traffic goes through gateway)
+  mountainTours.webApp -> mountainTours.apiGateway 'REST API calls' {
+    technology 'HTTPS/REST'
+  }
+  mountainTours.webApp -[async]-> mountainTours.apiGateway 'WebSocket connection' {
+    technology 'SignalR'
+  }
+
+  // Gateway -> Services
+  mountainTours.apiGateway -> mountainTours.iamService 'Routes auth requests'
+  mountainTours.apiGateway -> mountainTours.toursService 'Routes tour requests'
+  mountainTours.apiGateway -> mountainTours.bookingService 'Routes booking requests'
+  mountainTours.apiGateway -> mountainTours.reviewService 'Routes review requests'
+  mountainTours.apiGateway -[async]-> mountainTours.notificationService 'Proxies WebSocket' {
+    technology 'SignalR'
+  }
+
+  // Services -> Databases
+  mountainTours.iamService -> mountainTours.iamDb 'Reads/writes'
+  mountainTours.toursService -> mountainTours.toursDb 'Reads/writes'
+  mountainTours.bookingService -> mountainTours.bookingDb 'Reads/writes'
+  mountainTours.reviewService -> mountainTours.reviewDb 'Reads/writes'
+
+  // Services -> RabbitMQ (Pub/Sub)
+  mountainTours.iamService -[async]-> mountainTours.rabbitMq 'Publishes user events'
+  mountainTours.toursService -[async]-> mountainTours.rabbitMq 'Publishes tour events'
+  mountainTours.bookingService -[async]-> mountainTours.rabbitMq 'Publishes booking events'
+  mountainTours.reviewService -[async]-> mountainTours.rabbitMq 'Publishes review events'
+  mountainTours.notificationService -[async]-> mountainTours.rabbitMq 'Consumes events'
+
+  // Notification Service -> Database
+  mountainTours.notificationService -> mountainTours.notificationDb 'Stores events'
+
+  // Services -> External
+  mountainTours.bookingService -> stripe 'Payment API'
+  mountainTours.notificationService -> emailProvider 'SMTP/API'
+  mountainTours.toursService -> mapsApi 'Geocoding API'
+
+  // ==========================================================================
+  // RELATIONSHIPS - Component Level (Tours Service)
+  // ==========================================================================
+
+  mountainTours.toursService.tourCommands -> mountainTours.toursDb 'Writes'
+  mountainTours.toursService.tourQueries -> mountainTours.toursDb 'Reads'
+  mountainTours.toursService.guideAssignment -> mountainTours.toursService.availabilityManager 'Checks availability'
+  mountainTours.toursService.tourCommands -[async]-> mountainTours.rabbitMq 'Tour created/updated events'
+
+  // ==========================================================================
+  // RELATIONSHIPS - Component Level (Booking Service)
+  // ==========================================================================
+
+  mountainTours.bookingService.bookingCommands -> mountainTours.bookingDb 'Writes'
+  mountainTours.bookingService.bookingQueries -> mountainTours.bookingDb 'Reads'
+  mountainTours.bookingService.availabilityChecker -> mountainTours.toursService 'Checks tour capacity'
+  mountainTours.bookingService.paymentProcessor -> stripe 'Processes payment'
+  mountainTours.bookingService.bookingCommands -[async]-> mountainTours.rabbitMq 'Booking events'
+
+  // ==========================================================================
+  // RELATIONSHIPS - Component Level (Notification Service)
+  // ==========================================================================
+
+  mountainTours.notificationService.eventConsumer -[async]-> mountainTours.rabbitMq 'Listens to all events'
+  mountainTours.notificationService.eventStore -> mountainTours.notificationDb 'Persists events'
+  mountainTours.notificationService.signalRHub -> mountainTours.apiGateway 'Pushes real-time updates'
+  mountainTours.notificationService.emailSender -> emailProvider 'Sends emails'
+  mountainTours.notificationService.locationBroadcaster -> mountainTours.notificationService.signalRHub 'Broadcasts location'
+}

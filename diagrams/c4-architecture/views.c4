@@ -1,0 +1,208 @@
+// Mountain Tours System - C4 Views
+// Defines which diagrams to generate from the model
+
+views {
+
+  // ==========================================================================
+  // SYSTEM CONTEXT VIEW (C4 Level 1)
+  // ==========================================================================
+
+  view systemContext of mountainTours {
+    title 'System Context Diagram'
+    description 'Shows the Mountain Tours System and its relationships with users and external systems'
+
+    include
+      user,
+      guide,
+      tourOperator,
+      admin,
+      mountainTours,
+      stripe,
+      emailProvider,
+      mapsApi
+  }
+
+  // ==========================================================================
+  // CONTAINER VIEW (C4 Level 2)
+  // ==========================================================================
+
+  view containers of mountainTours {
+    title 'Container Diagram'
+    description 'Shows the containers (applications, services, databases) within the Mountain Tours System'
+
+    include
+      user,
+      guide,
+      tourOperator,
+      admin,
+      mountainTours.*,
+      stripe,
+      emailProvider,
+      mapsApi
+  }
+
+  // ==========================================================================
+  // COMPONENT VIEWS (C4 Level 3)
+  // ==========================================================================
+
+  view toursServiceComponents of mountainTours.toursService {
+    title 'Tours Service - Components'
+    description 'Internal components of the Tours Service (CQRS pattern)'
+
+    include
+      mountainTours.apiGateway,
+      mountainTours.toursService,
+      mountainTours.toursService.*,
+      mountainTours.toursDb,
+      mountainTours.rabbitMq,
+      mapsApi
+  }
+
+  view bookingServiceComponents of mountainTours.bookingService {
+    title 'Booking Service - Components'
+    description 'Internal components of the Booking Service'
+
+    include
+      mountainTours.apiGateway,
+      mountainTours.bookingService,
+      mountainTours.bookingService.*,
+      mountainTours.bookingDb,
+      mountainTours.rabbitMq,
+      mountainTours.toursService,
+      stripe
+  }
+
+  view notificationServiceComponents of mountainTours.notificationService {
+    title 'Notification Service - Components'
+    description 'Internal components handling real-time communication and event persistence'
+
+    include
+      mountainTours.notificationService,
+      mountainTours.notificationService.*,
+      mountainTours.rabbitMq,
+      mountainTours.notificationDb,
+      mountainTours.webApp,
+      emailProvider
+  }
+
+  view iamServiceComponents of mountainTours.iamService {
+    title 'IAM Service - Components'
+    description 'Internal components of the Identity & Access Management Service'
+
+    include
+      mountainTours.apiGateway,
+      mountainTours.iamService,
+      mountainTours.iamService.*,
+      mountainTours.iamDb,
+      mountainTours.rabbitMq
+  }
+
+  view reviewServiceComponents of mountainTours.reviewService {
+    title 'Review Service - Components'
+    description 'Internal components of the Review Service'
+
+    include
+      mountainTours.apiGateway,
+      mountainTours.reviewService,
+      mountainTours.reviewService.*,
+      mountainTours.reviewDb,
+      mountainTours.rabbitMq
+  }
+
+  // ==========================================================================
+  // FOCUSED VIEWS
+  // ==========================================================================
+
+  view dataFlow {
+    title 'Event-Driven Communication'
+    description 'Shows how services communicate asynchronously via RabbitMQ'
+
+    include
+      mountainTours.iamService,
+      mountainTours.toursService,
+      mountainTours.bookingService,
+      mountainTours.reviewService,
+      mountainTours.notificationService,
+      mountainTours.rabbitMq,
+      mountainTours.notificationDb,
+      mountainTours.webApp
+  }
+
+  view realTimeFeatures {
+    title 'Real-Time Features'
+    description 'Shows the architecture supporting real-time notifications and live tracking'
+
+    include
+      user,
+      guide,
+      mountainTours.webApp,
+      mountainTours.apiGateway,
+      mountainTours.notificationService,
+      mountainTours.notificationService.*,
+      mountainTours.rabbitMq,
+      mountainTours.notificationDb,
+      emailProvider
+  }
+
+  view paymentFlow {
+    title 'Payment Flow'
+    description 'Shows the payment processing architecture'
+
+    include
+      user,
+      mountainTours.webApp,
+      mountainTours.apiGateway,
+      mountainTours.bookingService,
+      mountainTours.bookingService.paymentProcessor,
+      mountainTours.bookingDb,
+      stripe
+  }
+
+  // ==========================================================================
+  // ACTOR JOURNEY VIEWS
+  // ==========================================================================
+
+  view userJourney {
+    title 'User Journey'
+    description 'System from a regular user perspective - search, book, review'
+
+    include
+      user,
+      mountainTours.webApp,
+      mountainTours.apiGateway,
+      mountainTours.iamService,
+      mountainTours.toursService,
+      mountainTours.bookingService,
+      mountainTours.reviewService,
+      mountainTours.notificationService,
+      stripe
+  }
+
+  view guideJourney {
+    title 'Guide Journey'
+    description 'System from a guide perspective - availability, assignments, live location'
+
+    include
+      guide,
+      mountainTours.webApp,
+      mountainTours.apiGateway,
+      mountainTours.iamService,
+      mountainTours.toursService,
+      mountainTours.notificationService,
+      mountainTours.rabbitMq
+  }
+
+  view operatorJourney {
+    title 'Tour Operator Journey'
+    description 'System from an operator perspective - create tours, assign guides, view stats'
+
+    include
+      tourOperator,
+      mountainTours.webApp,
+      mountainTours.apiGateway,
+      mountainTours.iamService,
+      mountainTours.toursService,
+      mountainTours.bookingService,
+      mountainTours.notificationService
+  }
+}

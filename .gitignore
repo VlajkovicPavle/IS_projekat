@@ -1,0 +1,18 @@
+# Build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.nav
+*.snm
+*.fls
+*.fdb_latexmk
+
+# PDFs (keep only final outputs)
+*.pdf
+!main.pdf
+!prezentacija.pdf
+
+# Misc temp
+*.tmp
+*.bak

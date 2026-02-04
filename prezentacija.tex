@@ -1,0 +1,203 @@
+\documentclass[11pt]{beamer}
+\usetheme{Madrid}
+\usepackage{fontspec}
+\setmainfont{Liberation Serif}
+\usepackage{graphicx}
+
+\title{Informacioni sistem za planinarske ture}
+\author{Uroš Dimitrijević, Pavle Vlajković}
+\date{\today}
+
+\setbeamertemplate{navigation symbols}{}
+
+\newcommand{\slideimg}[1]{\includegraphics[width=0.9\textwidth,height=0.75\textheight,keepaspectratio]{#1}}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Sadržaj}
+\tableofcontents
+\end{frame}
+
+\section{Uvod}
+
+\begin{frame}{Uvod}
+\begin{itemize}
+    \item Planinarske ture zahtevaju koordinaciju učesnika, vodiča i operatera.
+    \item Potrebno je objediniti pretragu, rezervacije i tok ture na jednom mestu.
+    \item Razvijen je predlog informacionog sistema za organizaciju tura.
+\end{itemize}
+\end{frame}
+
+\section{Analiza sistema}
+
+\begin{frame}{Opis procesa}
+\begin{enumerate}
+    \item Korisnik pretražuje i bira turu.
+    \item Vrši rezervaciju i dobija potvrdu.
+    \item Vodič realizuje turu i komunicira sa učesnicima.
+    \item Nakon ture sledi ocenjivanje i povratne informacije.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Učesnici u sistemu}
+\begin{itemize}
+    \item Korisnici
+    \item Vodiči
+    \item Turistički operateri
+    \item Administratori
+\end{itemize}
+\end{frame}
+
+\section{Slučajevi upotrebe}
+
+\begin{frame}{Slučajevi upotrebe}
+Slučajevi upotrebe su grupisani u šest celina:
+\begin{itemize}
+    \item Pretraga i pregled tura
+    \item Nalog i registracija
+    \item Rezervacija tura
+    \item Upravljanje i dodela
+    \item Pre ture
+    \item Posle ture
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Pretraga i pregled tura}
+\begin{figure}
+    \centering
+    \slideimg{Slike/uc_discovery.png}
+    \caption{Pretraga i pregled tura}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Nalog i registracija}
+\begin{figure}
+    \centering
+    \slideimg{Slike/uc_account_registration.png}
+    \caption{Nalog i registracija}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Rezervacija tura}
+\begin{figure}
+    \centering
+    \slideimg{Slike/uc_booking.png}
+    \caption{Rezervacija tura}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Upravljanje i dodela}
+\begin{figure}
+    \centering
+    \slideimg{Slike/uc_management_assignment.jpeg}
+    \caption{Upravljanje i dodela}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Pre ture / Posle ture}
+\begin{figure}
+    \centering
+    \slideimg{Slike/uc_pre_tour.jpeg}
+    \caption{Pre ture}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Pre ture / Posle ture}
+\begin{figure}
+    \centering
+    \slideimg{Slike/uc_post_tour.jpeg}
+    \caption{Posle ture}
+\end{figure}
+\end{frame}
+
+\section{Model i dijagrami}
+
+\begin{frame}{Model baze}
+\begin{figure}
+    \centering
+    \slideimg{Slike/class_diagram.png}
+    \caption{Klasni dijagram}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Dijagrami sekvenci}
+\begin{figure}
+    \centering
+    \slideimg{Slike/seq_tour_booking.png}
+    \caption{Rezervacija ture}
+\end{figure}
+\end{frame}
+
+\begin{frame}{DFD}
+\begin{figure}
+    \centering
+    \slideimg{Slike/dfd_level_0.png}
+    \caption{DFD nivo 0}
+\end{figure}
+\end{frame}
+
+\begin{frame}{BPMN}
+\begin{figure}
+    \centering
+    \slideimg{Slike/bpmn_user_registration.jpg}
+    \caption{Registracija korisnika}
+\end{figure}
+\end{frame}
+
+\section{Arhitektura}
+
+\begin{frame}{Predlog arhitekture}
+\begin{itemize}
+    \item Veb aplikacija sa jasnom podelom slojeva.
+    \item Jednostranična veb aplikacija + serverski servis sa programskim interfejsom + relaciona baza.
+    \item Autentifikacija i notifikacije kao prateći servisi.
+\end{itemize}
+\end{frame}
+
+\section{Interfejs}
+
+\begin{frame}{Skice interfejsa}
+\begin{figure}
+    \centering
+    \slideimg{Slike/ui_landing.png}
+    \caption{Početna strana}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Skice interfejsa}
+\begin{figure}
+    \centering
+    \slideimg{Slike/ui_tours_list.png}
+    \caption{Lista tura}
+\end{figure}
+\end{frame}
+
+\section{Zaključak}
+
+\begin{frame}{Zaključak}
+\begin{itemize}
+    \item Definisane ključne funkcionalnosti sistema.
+    \item Prikazani modeli, dijagrami i skice interfejsa.
+    \item Predložen smer daljeg razvoja.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Dalji razvoj}
+\begin{itemize}
+    \item Integracija plaćanja.
+    \item Mobilna aplikacija.
+    \item Napredne preporuke i analitika.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+Hvala na pažnji!
+\end{center}
+\end{frame}
+
+\end{document}

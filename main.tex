@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage{fontspec}
+\setmainfont{Liberation Serif}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{float}
+
+\title{\textbf{Informacioni sistem za planinarske ture}}
+\author{Uroš Dimitrijević, Pavle Vlajković}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\renewcommand*\contentsname{Sadržaj}
+\tableofcontents
+\newpage
+
+\section{Uvod}
+\input{Poglavlja/uvod}
+
+\section{Slučajevi upotrebe}
+\input{Poglavlja/slucajevi_upotrebe}
+
+\section{Model baze podataka sistema}
+\input{Poglavlja/model_podataka}
+
+\section{Dijagrami sekvenci}
+\input{Poglavlja/sekvence}
+
+\section{DFD dijagrami}
+\input{Poglavlja/dfd}
+
+\section{BPMN dijagrami}
+\input{Poglavlja/bpmn}
+
+\section{Predlog arhitekture sistema}
+\input{Poglavlja/arhitektura}
+
+\section{Skice korisničkog interfejsa}
+\input{Poglavlja/interfejs}
+
+\section{Demo prototipa}
+\input{Poglavlja/demo}
+
+\section{Zaključak}
+\input{Poglavlja/zakljucak}
+
+\end{document}

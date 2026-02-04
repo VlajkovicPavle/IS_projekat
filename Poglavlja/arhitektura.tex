@@ -1,0 +1,17 @@
+Predlog arhitekture zasniva se na C4 modelu i obuhvata kontekst, kontejnere, komponente i kod. Sistem je zamišljen kao veb aplikacija sa jasnom podelom na prezentacioni sloj, poslovnu logiku i sloj podataka. Ključni akteri su korisnici, vodiči, turistički operateri i administratori, dok su spoljne integracije predviđene za plaćanja i skladištenje medija.
+
+Kontekstni nivo prikazuje sistem kao centralnu tačku koja povezuje korisnike sa ponudom tura i omogućava komunikaciju između učesnika i vodiča. Na ovom nivou se uočavaju spoljne zavisnosti kao što su servisi za plaćanje, slanje obaveštenja i skladištenje fotografija. Kontejnerski nivo razdvaja klijentsku aplikaciju, serverski servis sa programskim interfejsom i bazu podataka. Klijentski deo obezbeđuje prikaz i unos podataka, serverski servis upravlja pravilima i validacijom, dok baza čuva trajne informacije o turama, korisnicima i rezervacijama.
+
+Komponentni nivo detaljnije razlaže serverski deo na module: autentifikaciju i autorizaciju, upravljanje turama, rezervacijama, korisnicima, recenzijama i notifikacijama. Ovakva modularizacija smanjuje zavisnosti i olakšava održavanje. Kod nivo se fokusira na ključne klase i interfejse koji realizuju poslovnu logiku.
+
+Tehnološki okvir je postavljen na jednostraničnu veb aplikaciju, serverski servis sa programskim interfejsom i relacionu bazu podataka, uz autentifikaciju i servis za notifikacije. Ovakva podela omogućava skalabilnost, lakše održavanje i jasne granice odgovornosti između modula.
+
+Arhitekturni prikaz obuhvata:
+\begin{itemize}
+    \item Kontekst – odnosi sistema sa spoljnim akterima.
+    \item Kontejnere – klijentska aplikacija, serverski servis i baza.
+    \item Komponente – unutrašnja podela serverskih modula.
+    \item Kod – ključne klase i njihove veze.
+\end{itemize}
+
+C4 dijagrami su pripremljeni u tekstualnom obliku i služe kao osnova za prikaz arhitekture kroz opis slojeva, uloga i veza između komponenti.

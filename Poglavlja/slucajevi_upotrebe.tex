@@ -1,0 +1,97 @@
+U okviru analize sistema, identifikovani su ključni slučajevi upotrebe. Radi preglednosti, grupisani su u šest celina. Svaka celina sadrži osnovne aktere, funkcionalnosti i dijagram slučajeva upotrebe.
+
+\subsection{Pretraga i pregled tura}
+Pretraga i pregled tura obuhvataju pretragu i uvid u ponudu koja je dostupna i bez autentifikacije. Korisnik može pretraživati ture po kriterijumima (lokacija, datum, težina, cena), pregledati detalje ture i videti profil vodiča ili operatera. Cilj ovog dela sistema je da omogući brzo informisanje i formiranje interesovanja pre registracije.
+
+\begin{itemize}
+    \item Akter: neregistrovani ili registrovani korisnik.
+    \item Osnovni tok: pretraga -> pregled liste -> detalji ture.
+    \item Alternativni tokovi: filtriranje po različitim kriterijumima, čitanje recenzija.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Slike/uc_discovery.png}
+    \caption{Slučaj upotrebe: Pretraga i pregled tura}
+    \label{fig:uc_discovery}
+\end{figure}
+
+\subsection{Nalog i registracija}
+Ova celina pokriva registraciju i upravljanje nalogom. Korisnici mogu kreirati nalog, a administratori odobravaju registracije vodiča i operatera. Registrovani korisnici upravljaju svojim profilom i čuvaju omiljene ture, dok administracija ima ulogu nadzora i kontrole pristupa.
+
+\begin{itemize}
+    \item Akteri: korisnik, administrator, vodič, operater.
+    \item Osnovni tok: registracija -> potvrda/odobrenje -> upravljanje profilom.
+    \item Alternativni tokovi: odbijanje registracije, suspenzija naloga.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Slike/uc_account_registration.png}
+    \caption{Slučaj upotrebe: Nalog i registracija}
+    \label{fig:uc_account_registration}
+\end{figure}
+
+\subsection{Rezervacija tura}
+Rezervacija tura obuhvata proces rezervacije privatnih i grupnih tura, proveru dostupnosti i slanje obaveštenja. Korisnik može pregledati i upravljati svojim rezervacijama, dok operater i vodič imaju pregled zahteva i učesnika. Na ovaj način se obezbeđuje kontrola kapaciteta i pravovremena komunikacija.
+
+\begin{itemize}
+    \item Akteri: korisnik, vodič, operater.
+    \item Osnovni tok: izbor ture -> provera dostupnosti -> rezervacija -> potvrda.
+    \item Alternativni tokovi: otkazivanje i izmena termina, obaveštenja o promenama.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Slike/uc_booking.png}
+    \caption{Slučaj upotrebe: Rezervacija tura}
+    \label{fig:uc_booking}
+\end{figure}
+
+\subsection{Upravljanje i dodela}
+Ova celina se odnosi na upravljanje turama i dodelu vodiča. Operater definiše termine i kapacitete, kreira grupne ture i dodeljuje vodiče, dok vodiči upravljaju raspoloživošću i prihvataju ili odbijaju dodelu. Sistem obezbeđuje pregled dodela i statusa.
+
+\begin{itemize}
+    \item Akteri: operater, vodič.
+    \item Osnovni tok: kreiranje ture -> dodela vodiča -> potvrda dodele.
+    \item Alternativni tokovi: odbijanje dodele, promena termina.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Slike/uc_management_assignment.jpeg}
+    \caption{Slučaj upotrebe: Upravljanje i dodela}
+    \label{fig:uc_management_assignment}
+\end{figure}
+
+\subsection{Pre ture}
+Pre ture obuhvataju aktivnosti pre i tokom ture: komunikaciju između vodiča i korisnika, deljenje lokacije, praćenje toka i ažuriranje statusa. Poseban fokus je na pravovremenom informisanju učesnika i logistici pre polaska.
+
+\begin{itemize}
+    \item Akteri: korisnik, vodič.
+    \item Osnovni tok: priprema ture -> komunikacija -> deljenje lokacije.
+    \item Alternativni tokovi: promene plana, obaveštenja o kašnjenju.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Slike/uc_pre_tour.jpeg}
+    \caption{Slučaj upotrebe: Pre ture}
+    \label{fig:uc_pre_tour}
+\end{figure}
+
+\subsection{Posle ture}
+Posle ture obuhvataju aktivnosti nakon završetka ture: ocenjivanje vodiča i ture, prijavu problema, kao i pregled statistike i izveštaja od strane operatera i administratora. Ove funkcionalnosti omogućavaju kontinuirano unapređenje kvaliteta i praćenje učinka.
+
+\begin{itemize}
+    \item Akteri: korisnik, operater, administrator.
+    \item Osnovni tok: završetak ture -> ocena i recenzija -> analiza učinka.
+    \item Alternativni tokovi: prijava problema, rešavanje sporova.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Slike/uc_post_tour.jpeg}
+    \caption{Slučaj upotrebe: Posle ture}
+    \label{fig:uc_post_tour}
+\end{figure}

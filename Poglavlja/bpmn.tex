@@ -1,0 +1,46 @@
+BPMN dijagrami detaljno opisuju poslovne procese i tok aktivnosti. Prikazani su ključni procesi registracije korisnika, otkrivanja tura i kreiranja nove ture od strane operatera. Ovi dijagrami prikazuju uloge, grananja i ključne tačke validacije u sistemu.
+
+\subsection*{Registracija korisnika}
+Proces registracije obuhvata unos podataka, proveru ispravnosti i kreiranje naloga. Administratorski korak odobravanja je obavezan za vodiče i operatere, čime se obezbeđuje kontrola kvaliteta učesnika.
+
+\begin{itemize}
+    \item Osnovni tok: popunjavanje forme -> validacija -> kreiranje naloga.
+    \item Alternativni tok: neispravni podaci -> povratak na korekciju.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Slike/bpmn_user_registration.jpg}
+    \caption{BPMN: Registracija korisnika}
+    \label{fig:bpmn_user_registration}
+\end{figure}
+
+\subsection*{Otkrivanje tura}
+Proces otkrivanja tura obuhvata pretragu, filtriranje i pregled ponuda. Korisnik se vodi kroz izbor ture i dobija jasne informacije o terminima, težini i dostupnosti.
+
+\begin{itemize}
+    \item Osnovni tok: pretraga -> filtriranje -> pregled detalja.
+    \item Alternativni tok: nema rezultata -> izmena kriterijuma.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Slike/bpmn_tour_discovery.jpg}
+    \caption{BPMN: Otkrivanje tura}
+    \label{fig:bpmn_tour_discovery}
+\end{figure}
+
+\subsection*{Kreiranje ture}
+Proces kreiranja ture obuhvata unos osnovnih podataka, definisanje itinerera, postavljanje cene i termina, kao i završno objavljivanje nakon pregleda. Operater je odgovoran za tačnost informacija i raspoloživost kapaciteta.
+
+\begin{itemize}
+    \item Osnovni tok: unos ture -> definisanje termina -> objava.
+    \item Alternativni tok: nepotpuni podaci -> dopuna pre objave.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Slike/bpmn_tour_creation.jpg}
+    \caption{BPMN: Kreiranje ture}
+    \label{fig:bpmn_tour_creation}
+\end{figure}

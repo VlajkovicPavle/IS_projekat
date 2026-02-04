@@ -1,0 +1,63 @@
+Dijagrami sekvenci prikazuju tok interakcije između korisnika, sistema i ostalih aktera kroz vremensku osu. Prikazani su ključni procesi: odobravanje registracije, rezervacija ture, dodela vodiča i završne aktivnosti nakon ture. Time se jasno uočava redosled poruka, tačke potvrde i zavisnosti između komponenti, kao i mesta gde se primenjuju pravila validacije i obaveštenja.
+
+Sekvence su posebno važne jer otkrivaju gde je neophodna sinhronizacija, gde se zahteva potvrda, kao i koje akcije pokreću notifikacije i promene statusa. Na osnovu ovih dijagrama moguće je preciznije definisati pozive programskog interfejsa, transakcione granice i očekivane reakcije sistema.
+
+\subsection*{Odobravanje registracije}
+Proces obuhvata kreiranje naloga, proveru podataka i administrativno odobravanje za vodiče i operatere. Nakon odobrenja korisnik dobija pristup sistemu, a u slučaju odbijanja dobija objašnjenje razloga i instrukcije za ponovni pokušaj.
+
+\begin{itemize}
+    \item Osnovni tok: registracija -> validacija -> čuvanje naloga -> odobravanje.
+    \item Alternativni tok: neispravni podaci -> korekcija; odbijanje -> obaveštenje.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Slike/seq_registration_approval.png}
+    \caption{Dijagram sekvenci: Odobravanje registracije}
+    \label{fig:seq_registration_approval}
+\end{figure}
+
+\subsection*{Rezervacija ture}
+Korisnik bira turu, sistem proverava dostupnost i kreira rezervaciju. Operater i vodič dobijaju obaveštenje o novoj rezervaciji, a korisnik potvrdu. U slučaju popunjenosti, sistem vraća informaciju o nedostupnosti i predlaže alternativne termine.
+
+\begin{itemize}
+    \item Osnovni tok: izbor ture -> provera kapaciteta -> kreiranje rezervacije -> potvrda.
+    \item Alternativni tok: puna tura -> odbijanje -> predlog drugih termina.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Slike/seq_tour_booking.png}
+    \caption{Dijagram sekvenci: Rezervacija ture}
+    \label{fig:seq_tour_booking}
+\end{figure}
+
+\subsection*{Upravljanje turama i dodela vodiča}
+Operater kreira turu i dodeljuje vodiča, dok vodič potvrđuje ili odbija dodelu. Sistem evidentira status i obaveštava relevantne strane. Dodela je ograničena raspoloživošću vodiča i vremenskim okvirom ture.
+
+\begin{itemize}
+    \item Osnovni tok: kreiranje ture -> dodela vodiča -> potvrda dodele.
+    \item Alternativni tok: odbijanje dodele -> izbor drugog vodiča.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Slike/seq_tour_management_assignment.png}
+    \caption{Dijagram sekvenci: Upravljanje turama i dodela vodiča}
+    \label{fig:seq_tour_management_assignment}
+\end{figure}
+
+\subsection*{Aktivnosti nakon ture}
+Po završetku ture korisnik ostavlja ocenu i komentar, dok operater dobija uvid u rezultate i statistiku. Sistem ažurira podatke o učinku i vezuje ocene za konkretnu turu i vodiča. U slučaju prijavljenih problema, aktivira se administrativni postupak.
+
+\begin{itemize}
+    \item Osnovni tok: završetak ture -> ocena/recenzija -> ažuriranje statistike.
+    \item Alternativni tok: prijava problema -> otvaranje slučaja -> obrada.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Slike/seq_post_tour.png}
+    \caption{Dijagram sekvenci: Aktivnosti nakon ture}
+    \label{fig:seq_post_tour}
+\end{figure}

@@ -1,0 +1,35 @@
+DFD dijagrami prikazuju tok podataka kroz sistem. Nivo 0 predstavlja sistem kao jedinstvenu celinu u odnosu na spoljne aktere, dok nivo 1 razlaže proces na ključne podsisteme i tokove podataka. Na taj način se vidi kako informacije prolaze kroz pretragu, rezervaciju, upravljanje turama i evaluaciju.
+
+DFD je koristan za razumevanje gde se podaci generišu, gde se čuvaju i koje komponente ih koriste. Takođe ukazuje na kritične tačke validacije i autorizacije, kao i na mesta gde je neophodna sinhronizacija između aktera i sistema.
+
+\subsection*{Nivo 0}
+Prikazani su glavni akteri (korisnik, vodič, operater i administrator) i njihova razmena podataka sa sistemom. Ovaj nivo naglašava osnovne ulaze i izlaze, bez detaljnog razlaganja internih procesa.
+
+\begin{itemize}
+    \item Ulazi: pretrage, zahtevi za rezervaciju, prijave i ocene.
+    \item Izlazi: potvrde, obaveštenja, statusi tura i izveštaji.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Slike/dfd_level_0.png}
+    \caption{DFD nivo 0}
+    \label{fig:dfd_level_0}
+\end{figure}
+
+\subsection*{Nivo 1}
+Nivo 1 razlaže sistem na logičke celine: pretraga i pregled tura, rezervacije, upravljanje turama i post-tur aktivnosti. Prikazani su tokovi podataka između podsistema i skladišta podataka.
+
+\begin{itemize}
+    \item Pretraga i pregled: rad sa katalogom tura i filtrima.
+    \item Rezervacije: provera kapaciteta, kreiranje i otkazivanje.
+    \item Upravljanje turama: kreiranje, dodela vodiča i ažuriranje termina.
+    \item Post-tur aktivnosti: ocene, recenzije i analitika.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Slike/dfd_level_1.png}
+    \caption{DFD nivo 1}
+    \label{fig:dfd_level_1}
+\end{figure}

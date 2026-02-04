@@ -1,0 +1,14 @@
+Model podataka definiše osnovne entitete sistema, njihove atribute i međusobne relacije. Ključni entiteti su korisnik, tura, rezervacija, turistički operater i vodič. Posebna pažnja posvećena je vezama između rezervacija i tura, kao i upravljanju korisničkim nalozima i ulogama.
+
+Korisnik predstavlja osnovnog učesnika sistema i može imati različite uloge (registrovani korisnik, vodič ili operater). Vodič je specijalizovani korisnik koji realizuje ture i ima evidenciju raspoloživosti. Operater predstavlja organizaciju koja kreira ponudu tura, definiše termine i kapacitete, kao i upravlja dodelom vodiča. Tura sadrži opis, nivo težine, lokaciju, vreme realizacije i ograničenja kapaciteta.
+
+Rezervacija je centralna tačka povezivanja korisnika sa izabranom turom. Ona sadrži status, vreme kreiranja, podatke o učesniku i vezu ka konkretnoj turi. Na osnovu rezervacija sistem prati popunjenost tura i obezbeđuje ažuriranje dostupnosti. Model obuhvata i pomoćne entitete za ocene i recenzije, čime se omogućava praćenje kvaliteta usluge i reputacije vodiča i operatera.
+
+Relacije između entiteta omogućavaju sledeće: korisnik može imati više rezervacija, tura može imati više učesnika, vodič može biti dodeljen na više tura, dok operater upravlja setom tura. Ovakva struktura omogućava skalabilnost sistema, jasno definisane odgovornosti i jednostavno proširenje novim funkcionalnostima.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Slike/class_diagram.png}
+    \caption{Klasni dijagram – model podataka}
+    \label{fig:class_diagram}
+\end{figure}

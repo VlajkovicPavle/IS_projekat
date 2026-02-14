@@ -2,27 +2,154 @@ Dijagrami sekvenci prikazuju tok interakcije između korisnika, sistema i ostali
 
 Sekvence su posebno važne jer otkrivaju gde je neophodna sinhronizacija, gde se zahteva potvrda, kao i koje akcije pokreću notifikacije i promene statusa. Na osnovu ovih dijagrama moguće je preciznije definisati pozive programskog interfejsa, transakcione granice i očekivane reakcije sistema.
 
-\subsection*{Odobravanje registracije}
-Proces obuhvata kreiranje naloga, proveru podataka i administrativno odobravanje za vodiče i operatere. Nakon odobrenja korisnik dobija pristup sistemu, a u slučaju odbijanja dobija objašnjenje razloga i instrukcije za ponovni pokušaj.
+%% ---- Registracija i odobravanje naloga ----
+\subsection*{Registracija i odobravanje naloga}
 
+Procedura registracije novog korisnika i administratorskog odobravanja naloga u sistemu planinarskih tura. Korisnik u ovom slučaju upotrebe je neautentifikovani posetilac koji želi da kreira nalog. Korisnik popunjava registracionu formu u kojoj bira tip naloga (regular user, guide ili tour operator). Sistem validira unete podatke i kreira nalog sa statusom pending. Administrator pregleda zahtev i odlučuje da li će odobriti ili odbiti registraciju.
+
+\subsubsection*{Učesnici}
 \begin{itemize}
-    \item Osnovni tok: registracija -> validacija -> čuvanje naloga -> odobravanje.
-    \item Alternativni tok: neispravni podaci -> korekcija; odbijanje -> obaveštenje.
+    \item \textbf{User} -- Neautentifikovani korisnik koji želi da se registruje.
+    \item \textbf{System} -- Centralni sistem koji validira podatke i upravlja procesima.
+    \item \textbf{Admin} -- Administrator sistema koji odobrava ili odbija registracione zahteve.
+\end{itemize}
+
+\subsubsection*{Preduslovi}
+Korisnik nije prijavljen u sistem. Administrator ima aktivan nalog i pristup administratorskom panelu. Sistem je operativan.
+
+\subsubsection*{Postuslovi}
+Korisnički nalog dobija status ACTIVE (odobrenje) ili REJECTED (odbijanje). Korisnik je notifikovan o odluci administratora.
+
+\subsubsection*{Osnovni tok}
+\begin{enumerate}
+    \item User popunjava registracionu formu (ime, prezime, email, lozinka, tip korisnika).
+    \item User šalje formu sistemu.
+    \item System validira podatke forme (format email-a, jedinstvenost, snaga lozinke, obavezna polja).
+    \item System šalje notifikaciju administratoru o novom registracionom zahtevu.
+    \item Admin pregleda zahtev i odobrava registraciju.
+    \item System ažurira status naloga na ACTIVE.
+    \item System šalje korisniku notifikaciju o odobrenju registracije.
+\end{enumerate}
+
+\subsubsection*{Alternativni tokovi}
+
+\textbf{A1. Nevalidni podaci.} Ukoliko u koraku 3 osnovnog toka podaci ne prođu validaciju:
+\begin{enumerate}
+    \item System vraća poruku o greškama i označava nevalidna polja.
+    \item User ispravlja podatke i ponovo šalje formu.
+\end{enumerate}
+Proces se nastavlja u koraku 3 osnovnog toka.
+
+\textbf{A2. Administrator odbija registraciju.} Ukoliko u koraku 5 osnovnog toka administrator odluči da odbije zahtev:
+\begin{enumerate}
+    \item System ažurira status naloga na REJECTED.
+    \item System šalje korisniku notifikaciju o odbijanju.
+\end{enumerate}
+Proces se završava.
+
+\subsubsection*{Dodatne informacije}
+\begin{itemize}
+    \item Lozinka se mora hashirati pre čuvanja u bazi.
+    \item Email adresa mora biti jedinstvena u sistemu.
+    \item Različiti tipovi korisnika (regular user, guide, tour operator) mogu zahtevati različite nivoe provere pre odobravanja.
+    \item Sistem može slati reminder notifikacije administratoru ako zahtev nije pregledan u definisanom vremenskom roku.
 \end{itemize}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{Slike/seq_registration_approval.png}
-    \caption{Dijagram sekvenci: Odobravanje registracije}
+    \caption{Dijagram sekvenci: Registracija i odobravanje naloga}
     \label{fig:seq_registration_approval}
 \end{figure}
 
+%% ---- Rezervacija ture ----
 \subsection*{Rezervacija ture}
-Korisnik bira turu, sistem proverava dostupnost i kreira rezervaciju. Operater i vodič dobijaju obaveštenje o novoj rezervaciji, a korisnik potvrdu. U slučaju popunjenosti, sistem vraća informaciju o nedostupnosti i predlaže alternativne termine.
 
+Procedura rezervacije planinarskih tura sa podrškom za privatne i grupne ture, uključujući proveru dostupnosti i procesiranje plaćanja. Sistem rezervacije omogućava korisnicima da pretražuju i rezervišu ture kroz web platformu. Sistem podržava dva tipa tura: privatne ture koje zahtevaju prihvatanje od strane vodiča i grupne ture sa ograničenim kapacitetom.
+
+\subsubsection*{Učesnici}
 \begin{itemize}
-    \item Osnovni tok: izbor ture -> provera kapaciteta -> kreiranje rezervacije -> potvrda.
-    \item Alternativni tok: puna tura -> odbijanje -> predlog drugih termina.
+    \item \textbf{User} -- Autentifikovani korisnik koji želi da rezerviše turu.
+    \item \textbf{Tour Website} -- Frontend web aplikacija za pretragu i rezervaciju.
+    \item \textbf{Tour Database} -- Baza podataka sa informacijama o turama i rezervacijama.
+    \item \textbf{Guide System} -- Podsistem koji upravlja vodičima i njihovim zahtevima.
+    \item \textbf{Payment Gateway} -- Eksterni servis za procesiranje plaćanja.
+\end{itemize}
+
+\subsubsection*{Preduslovi}
+Korisnik je autentifikovan i prijavljen u sistem. U sistemu postoje dostupne ture. Payment Gateway je operativan.
+
+\subsubsection*{Postuslovi}
+Rezervacija je kreirana i potvrđena. Plaćanje je uspešno procesovano. Korisnik i vodič/operator su notifikovani o novoj rezervaciji.
+
+\subsubsection*{Osnovni tok}
+\begin{enumerate}
+    \item User pretražuje ture preko Tour Website.
+    \item User otvara detalje specifične ture.
+    \item User bira privatnu turu sa željenim datumom.
+    \item Tour Website proverava dostupnost vodiča sa Tour Database.
+    \item Tour Database šalje zahtev vodiču preko Guide System.
+    \item Guide System notifikuje vodiča o zahtevu.
+    \item Vodič prihvata zahtev.
+    \item Tour Database kreira rezervaciju.
+    \item Tour Website šalje korisniku potvrdu rezervacije.
+    \item Tour Website inicira procesiranje plaćanja sa Payment Gateway.
+    \item Payment Gateway procesira plaćanje.
+    \item Payment Gateway potvrđuje uspešno plaćanje.
+    \item Tour Website šalje korisniku konačnu potvrdu rezervacije.
+    \item Tour Website šalje notifikaciju vodiču/operatoru o uspešnoj rezervaciji.
+\end{enumerate}
+
+\subsubsection*{Podtok: Rezervacija grupne ture}
+Ukoliko korisnik u koraku 3 osnovnog toka bira grupnu turu umesto privatne:
+\begin{enumerate}
+    \item User bira grupnu turu.
+    \item Tour Website proverava dostupna mesta u Tour Database.
+    \item Tour Database kreira rezervaciju.
+    \item Tour Database smanjuje broj dostupnih mesta za 1.
+    \item Tour Database šalje potvrdu korisniku.
+\end{enumerate}
+Proces se nastavlja u koraku 10 osnovnog toka.
+
+\subsubsection*{Alternativni tokovi}
+
+\textbf{A1. Vodič odbija privatnu turu.} Ukoliko u koraku 7 osnovnog toka vodič odbije zahtev:
+\begin{enumerate}
+    \item Guide System notifikuje korisnika o odbijanju.
+    \item Tour Website završava proces.
+\end{enumerate}
+Korisnik može izabrati drugog vodiča ili drugu turu.
+
+\textbf{A2. Grupna tura je popunjena.} Ukoliko nema dostupnih mesta:
+\begin{enumerate}
+    \item Tour Website prikazuje poruku ``Tura je popunjena''.
+    \item Tour Website predlaže alternative (drugi datumi, slične ture).
+    \item Tour Website završava proces.
+\end{enumerate}
+
+\textbf{A3. Neuspešno plaćanje.} Ukoliko u koraku 12 osnovnog toka plaćanje ne uspe:
+\begin{enumerate}
+    \item Payment Gateway vraća grešku.
+    \item Tour Website prikazuje poruku o neuspešnom plaćanju.
+    \item Tour Website oslobađa rezervaciju.
+    \item Tour Website omogućava korisniku ponovni pokušaj plaćanja.
+\end{enumerate}
+
+\textbf{A4. Database nedostupna.} Ukoliko u koraku 4 osnovnog toka Tour Database nije dostupna:
+\begin{enumerate}
+    \item Tour Website prikazuje poruku: ``Sistem je privremeno nedostupan''.
+    \item Rezervacija se ne kreira.
+\end{enumerate}
+
+\subsubsection*{Specijalni zahtevi}
+\begin{itemize}
+    \item Payment Gateway mora biti PCI DSS compliant.
+    \item Sistem ne sme dozvoljiti overbooking (više rezervacija od kapaciteta).
+    \item Sva komunikacija mora biti enkriptovana (HTTPS).
+    \item Privatne ture zahtevaju eksplicitno prihvatanje od strane vodiča.
+    \item Grupne ture funkcionišu po principu ``first-come, first-served''.
+    \item Sistem koristi optimistic locking za prevenciju race condition-a pri rezervaciji poslednjeg mesta.
+    \item Vodič može postaviti timeout za odgovor na zahtev (npr. 48 sati), nakon čega se zahtev automatski odbija.
 \end{itemize}
 
 \begin{figure}[H]
@@ -32,32 +159,195 @@ Korisnik bira turu, sistem proverava dostupnost i kreira rezervaciju. Operater i
     \label{fig:seq_tour_booking}
 \end{figure}
 
-\subsection*{Upravljanje turama i dodela vodiča}
-Operater kreira turu i dodeljuje vodiča, dok vodič potvrđuje ili odbija dodelu. Sistem evidentira status i obaveštava relevantne strane. Dodela je ograničena raspoloživošću vodiča i vremenskim okvirom ture.
+%% ---- Upravljanje turama i dodeljivanje vodiča ----
+\subsection*{Upravljanje turama i dodeljivanje vodiča}
 
+Procedura kreiranja novih grupnih tura od strane tour operatora i dodeljivanja vodiča kroz proveru dostupnosti u kalendar sistemu. Tour operator kreira nove grupne ture i dodeljuje vodiče tim turama. Proces obuhvata kreiranje ture sa osnovnim informacijama (raspored, kapacitet, lokacija), pretragu dostupnih vodiča kroz kalendar sistem, slanje zahteva za dodeljivanje i odluku vodiča. U normalnom toku tura dobija vodiča pre objavljivanja. Sistem omogućava i alternativni scenario u kome, kada nema dostupnih vodiča, tour operator može da objavi turu i naknadno dodeli vodiča.
+
+\subsubsection*{Učesnici}
 \begin{itemize}
-    \item Osnovni tok: kreiranje ture -> dodela vodiča -> potvrda dodele.
-    \item Alternativni tok: odbijanje dodele -> izbor drugog vodiča.
+    \item \textbf{Tour Operator} -- Poslovni korisnik koji kreira i upravlja turama.
+    \item \textbf{System} -- Centralni sistemski modul koji rukuje procesima kreiranja i dodeljivanja.
+    \item \textbf{Guide} -- Vodič koji pregleda zahteve za dodeljivanje i odlučuje da li ih prihvata.
 \end{itemize}
+
+\subsubsection*{Preduslovi}
+Tour Operator je autentifikovan i prijavljen u sistem. U sistemu postoje registrovani i odobreni vodiči. Guide kalendar sistem je operativan.
+
+\subsubsection*{Postuslovi}
+U normalnom toku tura dobija status CONFIRMED sa dodeljenim vodičem i vidljiva je korisnicima. U alternativnom toku (nema dostupnih vodiča) tura može biti objavljena sa statusom PENDING\_GUIDE\_ASSIGNMENT i vidljiva korisnicima uz napomenu da se vodič još određuje.
+
+\subsubsection*{Osnovni tok}
+\begin{enumerate}
+    \item Tour Operator kreira novu grupnu turu.
+    \item Tour Operator unosi podatke o turi (raspored, kapacitet, lokacija, cena, opis).
+    \item System čuva turu u bazi.
+    \item System postavlja status ture na PENDING\_GUIDE\_ASSIGNMENT.
+    \item Tour Operator pretražuje dostupne vodiče.
+    \item System proverava dostupnost vodiča kroz kalendar.
+    \item Guide vraća status dostupnosti za dati datum.
+    \item Tour Operator dodeljuje vodiča turi.
+    \item System šalje notifikaciju vodiču o dodeljivanju.
+    \item System šalje potvrdu tour operatoru o dodeljivanju.
+    \item Guide otvara notifikaciju i pregleda dodeljivanje.
+    \item Guide prihvata dodeljivanje.
+    \item System ažurira status ture na CONFIRMED.
+    \item Tura je sada vidljiva korisnicima za rezervaciju.
+\end{enumerate}
+
+\subsubsection*{Alternativni tokovi}
+
+\textbf{A1. Vodič odbija dodeljivanje.} Ukoliko u koraku 12 osnovnog toka vodič odbije zahtev:
+\begin{enumerate}
+    \item System notifikuje tour operatora o odbijanju.
+    \item System vraća tour operatora na pretragu vodiča (korak 4 osnovnog toka).
+\end{enumerate}
+Tour operator može pretraživati drugog vodiča ili otkazati kreiranje.
+
+\textbf{A2. Nema dostupnih vodiča.} Ukoliko u koraku 7 osnovnog toka svi vodiči su zauzeti:
+\begin{enumerate}
+    \item System obaveštava tour operatora da nema dostupnih vodiča.
+    \item Tour operator pretražuje ponovo ili odabira objavljivanje ture bez vodiča.
+\end{enumerate}
+
+\textbf{A2.1.} Ukoliko tour operator odluči da pretražuje ponovo:
+\begin{enumerate}
+    \item System vraća tour operatora na pretragu vodiča (korak 4 osnovnog toka).
+\end{enumerate}
+
+\textbf{A2.2.} Ukoliko tour operator odluči da objavi turu bez vodiča:
+\begin{enumerate}
+    \item System objavljuje turu za rezervaciju sa statusom PENDING\_GUIDE\_ASSIGNMENT.
+    \item Tura je vidljiva korisnicima uz napomenu da se vodič još određuje.
+\end{enumerate}
+Tour operator može naknadno dodeliti vodiča i turu prevesti u status CONFIRMED.
+
+\textbf{A3. Tour operator otkazuje kreiranje.} Ukoliko tour operator u bilo kom trenutku odustane:
+\begin{enumerate}
+    \item System briše ili arhivira nepotvrđenu turu.
+    \item Status ture se postavlja na CANCELLED.
+\end{enumerate}
+Proces se završava.
+
+\subsubsection*{Specijalni zahtevi}
+\begin{itemize}
+    \item Samo tour operatori mogu kreirati ture.
+    \item Sistem može implementirati auto-timeout za vodičevu odluku (npr. 48 sati).
+    \item Tour operator može imati listu preferiranih vodiča.
+    \item Kalendar sistem se može integrisati sa Google Calendar ili iCal.
+    \item Velike ture mogu zahtevati više vodiča.
+\end{itemize}
+
+\subsubsection*{Obrazloženje: Objavljivanje ture bez vodiča (tok A2.2)}
+U poslovnoj praksi tour operatora postoje situacije kada je neophodno objaviti turu pre nego što vodič bude formalno potvrđen. Ovo se dešava naročito u periodima visoke potražnje (npr. letnja sezona, državni praznici) kada su popularni termini brzo rasprodati, a vodiči još nisu potvrdili raspoloživost.
+
+Objavljivanjem ture u statusu PENDING\_GUIDE\_ASSIGNMENT, tour operator:
+\begin{itemize}
+    \item Osigurava vidljivost ture u sistemu i omogućava korisnicima da rezervišu mesta na vreme.
+    \item Zadržava poslovnu fleksibilnost da paralelno pregovara sa više vodiča.
+    \item Smanjuje rizik od propuštene potražnje usled administrativnih kašnjenja u dodeljivanju vodiča.
+\end{itemize}
+
+Sistem štiti korisnike transparentnošću -- tura je označena napomenom da se vodič još određuje. Korisnici svesno rezervišu uz znanje da će vodič biti naknadno potvrđen. Ukoliko tour operator ne uspe da dodeli vodiča do određenog roka, sistem može automatski otkazati turu i refundirati rezervacije.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{Slike/seq_tour_management_assignment.png}
-    \caption{Dijagram sekvenci: Upravljanje turama i dodela vodiča}
+    \caption{Dijagram sekvenci: Upravljanje turama i dodeljivanje vodiča}
     \label{fig:seq_tour_management_assignment}
 \end{figure}
 
-\subsection*{Aktivnosti nakon ture}
-Po završetku ture korisnik ostavlja ocenu i komentar, dok operater dobija uvid u rezultate i statistiku. Sistem ažurira podatke o učinku i vezuje ocene za konkretnu turu i vodiča. U slučaju prijavljenih problema, aktivira se administrativni postupak.
+%% ---- Post-tour recenzije ----
+\subsection*{Post-tour recenzije}
 
+Procedura ostavljanja recenzija i ocenjivanja nakon završetka ture, sa moderacijom prijavljenog sadržaja od strane administratora. Korisnik nakon završetka planiranske ture može da ostavi recenziju i ocenu za turu i vodiča. Sistem prvo verifikuje da je tura završena i da korisnik ima validnu rezervaciju. Korisnik ocenjuje turu (1--5 zvezda), piše komentar, i ocenjuje vodiča (1--5 zvezda). Sistem validira sadržaj recenzije i čuva je u bazi. Drugi korisnici, vodiči ili tour operatori mogu prijaviti recenziju kao neprikladnu, nakon čega administrator pregleda sadržaj i donosi konačnu odluku.
+
+\subsubsection*{Učesnici}
 \begin{itemize}
-    \item Osnovni tok: završetak ture -> ocena/recenzija -> ažuriranje statistike.
-    \item Alternativni tok: prijava problema -> otvaranje slučaja -> obrada.
+    \item \textbf{User} -- Korisnik koji je učestvovao u turi i želi da ostavi recenziju.
+    \item \textbf{System} -- Centralni sistem koji upravlja procesima recenzija i validacije.
+    \item \textbf{Admin} -- Administrator koji moderuje prijavljeni sadržaj.
+\end{itemize}
+
+\subsubsection*{Preduslovi}
+Korisnik je autentifikovan. Korisnik je imao potvrđenu rezervaciju za turu. Tura je završena (datum ture je prošao). Korisnik još nije ostavio recenziju za datu turu.
+
+\subsubsection*{Postuslovi}
+Recenzija je sačuvana sa statusom PUBLISHED. Prosečne ocene ture i vodiča su ažurirane. Recenzija je javno vidljiva. Vodič i tour operator su notifikovani.
+
+\subsubsection*{Osnovni tok}
+\begin{enumerate}
+    \item User šalje zahtev za otvaranje forme za recenziju.
+    \item System otvara formu za recenziju.
+    \item System verifikuje da li je tura završena.
+    \item User ocenjuje turu (1--5 zvezda).
+    \item User piše komentar o turi.
+    \item User ocenjuje vodiča (1--5 zvezda).
+    \item User šalje recenziju.
+    \item System validira sadržaj recenzije (dužina komentara, zabranjene reči, format).
+    \item System čuva recenziju u bazi.
+    \item System ažurira prosečne ocene ture i vodiča.
+    \item System šalje potvrdu korisniku o sačuvanoj recenziji.
+    \item System šalje notifikaciju vodiču i tour operatoru o novoj recenziji.
+\end{enumerate}
+
+\subsubsection*{Alternativni tokovi}
+
+\textbf{A1. Tura nije završena.} Ukoliko u koraku 3 osnovnog toka tura nije završena:
+\begin{enumerate}
+    \item System prikazuje poruku: ``Ne možete ostaviti recenziju dok se tura ne završi''.
+\end{enumerate}
+Proces se završava.
+
+\textbf{A2. Nevalidan sadržaj recenzije.} Ukoliko u koraku 8 osnovnog toka sadržaj ne prolazi validaciju:
+\begin{enumerate}
+    \item System prikazuje greške i označava nevalidna polja.
+    \item User ispravlja sadržaj.
+    \item User ponovo šalje recenziju.
+\end{enumerate}
+Proces se nastavlja u koraku 8 osnovnog toka.
+
+\textbf{A3. Prijavljeni sadržaj.} Ukoliko nakon koraka 12 osnovnog toka drugi korisnik, vodič ili operator prijave recenziju:
+\begin{enumerate}
+    \item System flaguje recenziju sa statusom PENDING\_MODERATION.
+    \item System šalje notifikaciju administratoru o prijavljenom sadržaju.
+    \item Admin pregleda recenziju i kontekst prijave.
+\end{enumerate}
+
+\textbf{A3.1.} Ukoliko admin odobri recenziju:
+\begin{enumerate}
+    \item System postavlja status recenzije na APPROVED.
+    \item Recenzija ostaje vidljiva.
+\end{enumerate}
+
+\textbf{A3.2.} Ukoliko admin odbije recenziju:
+\begin{enumerate}
+    \item System postavlja status recenzije na REJECTED ili DELETED.
+    \item System sakriva ili briše recenziju.
+    \item System ažurira prosečne ocene bez ove recenzije.
+    \item System notifikuje autora recenzije o uklanjanju.
+\end{enumerate}
+
+\subsubsection*{Specijalni zahtevi}
+\begin{itemize}
+    \item Sistem mora sprečiti XSS napade (sanitizacija komentara).
+    \item Korisnik može recenzirati samo svoje ture.
+    \item Rate limiting mora sprečiti spam recenzije.
+\end{itemize}
+
+\subsubsection*{Dodatne informacije}
+\begin{itemize}
+    \item Sistem može automatski flagovati recenzije sa neprikladnim rečima pomoću profanity filter-a.
+    \item Verifikovani korisnici (koji su stvarno bili na turi) dobijaju ``Verified'' oznaku.
+    \item Drugi korisnici mogu glasati da li je recenzija korisna (helpful votes).
+    \item Tour operator može odgovarati na recenzije.
+    \item Sistem može slati reminder notifikacije korisnicima koji nisu ostavili recenziju nakon 7, 14 i 30 dana.
+    \item Korisnici mogu dodavati fotografije u recenzije.
 \end{itemize}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{Slike/seq_post_tour.png}
-    \caption{Dijagram sekvenci: Aktivnosti nakon ture}
+    \caption{Dijagram sekvenci: Post-tour recenzije}
     \label{fig:seq_post_tour}
 \end{figure}

@@ -1,0 +1,15 @@
+{
+  "name": "mountain-tours-c4-architecture",
+  "version": "1.0.0",
+  "description": "C4 Architecture diagrams for Mountain Tours System",
+  "private": true,
+  "scripts": {
+    "dev": "likec4 start -p 3456",
+    "preview": "likec4 preview",
+    "build": "likec4 build -o ./dist",
+    "export": "likec4 export png -o ./exports"
+  },
+  "devDependencies": {
+    "likec4": "latest"
+  }
+}
